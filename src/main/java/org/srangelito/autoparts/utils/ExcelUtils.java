@@ -8,10 +8,10 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 import org.srangelito.autoparts.entity.ProductEntity;
-import org.srangelito.autoparts.exception.DuplicateAttributeColumnException;
-import org.srangelito.autoparts.exception.MissingAttributeColumnsException;
-import org.srangelito.autoparts.exception.SheetTitleNotFoundException;
-import org.srangelito.autoparts.exception.UnsupportedFileTypeException;
+import org.srangelito.autoparts.exceptions.DuplicateAttributeColumnException;
+import org.srangelito.autoparts.exceptions.MissingAttributeColumnsException;
+import org.srangelito.autoparts.exceptions.SheetTitleNotFoundException;
+import org.srangelito.autoparts.exceptions.UnsupportedFileTypeException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -134,7 +134,7 @@ public final class ExcelUtils {
     public static byte[] buildProductsExcelReport(List<ProductEntity> products) throws IOException {
         XSSFWorkbook excelWorkbook = new XSSFWorkbook();
         XSSFSheet excelSheet = excelWorkbook.createSheet();
-        ExcelUtils.setRowValues(excelSheet.createRow(0), "Part Number", "Application", "Quantity", "Private Price", "Public Price");
+        ExcelUtils.setRowValues(excelSheet.createRow(0), "Número de Parte", "Aplicación", "Cantidad", "Precio", "Público");
 
         int rowIndex = 1;
         for (ProductEntity product : products) {
