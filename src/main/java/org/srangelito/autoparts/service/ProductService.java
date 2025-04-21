@@ -3,7 +3,6 @@ package org.srangelito.autoparts.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.srangelito.autoparts.dto.ProductDto;
@@ -28,7 +27,7 @@ public class ProductService {
 
     public byte[] getProductsExcelReport() throws IOException {
         List<ProductEntity> products = productRepository.findAll();
-        return ExcelUtils.buildProductsExcelReport(products);
+        return ExcelUtils.buildExcelReport(products);
     }
 
     public void upsertProduct(ProductEntity product) {

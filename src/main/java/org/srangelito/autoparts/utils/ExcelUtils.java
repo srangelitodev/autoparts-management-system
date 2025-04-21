@@ -8,6 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 import org.srangelito.autoparts.entity.ProductEntity;
+import org.srangelito.autoparts.entity.SaleEntity;
 import org.srangelito.autoparts.exceptions.DuplicateAttributeColumnException;
 import org.srangelito.autoparts.exceptions.MissingAttributeColumnsException;
 import org.srangelito.autoparts.exceptions.SheetTitleNotFoundException;
@@ -131,17 +132,28 @@ public final class ExcelUtils {
         }
     }
 
-    public static byte[] buildProductsExcelReport(List<ProductEntity> products) throws IOException {
+    public static <T> byte[] buildExcelReport(List<T> items) throws IOException {
         XSSFWorkbook excelWorkbook = new XSSFWorkbook();
         XSSFSheet excelSheet = excelWorkbook.createSheet();
-        ExcelUtils.setRowValues(excelSheet.createRow(0), "Número de Parte", "Aplicación", "Cantidad", "Precio", "Público");
 
-        int rowIndex = 1;
-        for (ProductEntity product : products) {
-            ExcelUtils.setRowValues(excelSheet.createRow(rowIndex), product.getPartNumber(), product.getApplication(), product.getQuantity(), product.getPrivatePrice(), product.getPublicPrice());
-            rowIndex++;
+        if (items.getFirst() instanceof ProductEntity) {
+            ExcelUtils.setRowValues(excelSheet.createRow(0), "Número de Parte", "Aplicación", "Cantidad", "Precio", "Público");
+            int rowIndex = 1;
+            for (T item : items) {
+                ProductEntity productEntity = (ProductEntity) item;
+                ExcelUtils.setRowValues(excelSheet.createRow(rowIndex), productEntity.getPartNumber(), productEntity.getApplication(), productEntity.getQuantity(), productEntity.getPrivatePrice(), productEntity.getPublicPrice());
+                rowIndex++;
+            }
         }
-
+        else if (items.getFirst() instanceof SaleEntity) {
+            ExcelUtils.setRowValues(excelSheet.createRow(0), "Número de Parte", "Cantidad", "Total");
+            int rowIndex = 1;
+            for (T item : items) {
+                SaleEntity saleEntity = (SaleEntity) item;
+                ExcelUtils.setRowValues(excelSheet.createRow(rowIndex), saleEntity.getPartNumber(), saleEntity.getSaleDate(), saleEntity.getSaleTotal());
+                rowIndex++;
+            }
+        }
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         excelWorkbook.write(byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
