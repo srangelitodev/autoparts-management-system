@@ -1,0 +1,249 @@
+:root {
+    --primary-blue: #2c4a74;
+    --hover-blue: #3a5a8a;
+    --background-light: #f4f6f8;
+    --success-green: #28a745;
+    --error-red: #dc3545;
+    --text-color: #1e3a5f;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-light);
+    margin: 0;
+    padding: 0;
+}
+
+.top-menu {
+    background-color: var(--primary-blue);
+    padding: 10px 0;
+    margin-bottom: 15px;
+}
+
+.action-menu {
+    background-color: var(--primary-blue);
+    padding: 8px 0;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav li {
+    margin: 0 15px;
+}
+
+nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.3s ease, transform 0.3s ease;
+    transform-origin: left center;
+}
+
+nav a:hover {
+    color: #d0e2ff;
+    transform: scale(1.1);
+}
+
+.icon, .icon-action {
+    width: 22px;
+    height: 22px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.icon {
+    pointer-events: none;
+}
+
+.icon-action {
+    transition: transform 0.3s ease, rotate 0.3s ease, filter 0.3s ease;
+}
+
+.icon-action:hover {
+    transform: rotate(15deg) scale(1.2);
+    filter: brightness(1.2);
+}
+
+table {
+    width: 90%;
+    margin: 30px auto;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+thead {
+    background-color: var(--primary-blue);
+    color: #ffffff;
+}
+
+thead th, tbody td {
+    padding: 12px;
+    font-size: 15px;
+    text-align: center;
+}
+
+tbody td {
+    border-bottom: 1px solid #dddddd;
+}
+
+tbody tr:hover {
+    background-color: #e6eaf0;
+}
+
+.pagination-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.pagination-buttons {
+    margin-bottom: 10px;
+}
+
+.pagination-buttons a {
+    background-color: var(--primary-blue);
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    margin: 0 5px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.pagination-buttons a:hover {
+    background-color: var(--hover-blue);
+}
+
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    width: 320px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation: fade-in 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: var(--text-color);
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.modal-content form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-content label {
+    margin-top: 10px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.modal-content input,
+.modal-content select,
+.modal-content button {
+    margin-top: 5px;
+    margin-bottom: 15px;
+    padding: 8px;
+    width: 90%;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+}
+
+.modal-content button {
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content button:hover {
+    background-color: var(--hover-blue);
+}
+
+.success-message, .error-message {
+    color: white;
+    padding: 10px;
+    margin: 20px auto;
+    border-radius: 8px;
+    width: 70%;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+}
+
+.success-message {
+    background-color: var(--success-green);
+}
+
+.error-message {
+    background-color: var(--error-red);
+}
+
+a img {
+    text-decoration: none;
+    border: none;
+    outline: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

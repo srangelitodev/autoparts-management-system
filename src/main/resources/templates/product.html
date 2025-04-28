@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Productos</title>
+    <link rel="stylesheet" th:href="@{/css/general.css}">
+</head>
+<body>
+
+<script>
+    function showModal(id) {
+        const modal = document.getElementById(id);
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(id) {
+        const modal = document.getElementById(id);
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    function showUpdateProductForm(id, partNumber, application, quantity, privatePrice, publicPrice) {
+        document.getElementById('editId').value = id;
+        document.getElementById('editPartNumber').value = partNumber;
+        document.getElementById('editApplication').value = application;
+        document.getElementById('editQuantity').value = quantity;
+        document.getElementById('editPrivatePrice').value = privatePrice;
+        document.getElementById('editPublicPrice').value = publicPrice;
+        showModal('updateProductForm');
+    }
+
+    window.onclick = function(event) {
+        ['searchProductForm', 'addProductForm', 'updateProductForm', 'uploadProductExcelForm'].forEach(function(id) {
+            const modal = document.getElementById(id);
+            if (event.target === modal) closeModal(id);
+        });
+    }
+</script>
+
+<div id="searchProductForm" class="modal">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="close" onclick="closeModal('searchProductForm')">&times;</span>
+        <h2 class="center-text">Buscar Producto</h2>
+        <form th:action="@{/product/search}" method="get">
+            <label for="criterion" class="center-text">Buscar por...</label>
+            <select id="criterion" name="criterion" class="center-input" required>
+                <option value="partNumber">Número de parte</option>
+                <option value="application">Aplicación</option>
+            </select>
+            <input type="text" id="stringToSearch" name="stringToSearch" required class="center-input" placeholder="Ej: 357501117A-TMK">
+            <button type="submit">Buscar</button>
+        </form>
+    </div>
+</div>
+
+<div id="addProductForm" class="modal">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="close" onclick="closeModal('addProductForm')">&times;</span>
+        <h2 class="center-text">Agregar Producto</h2>
+        <form th:action="@{/product/add}" method="post">
+            <label for="partNumber" class="center-text">Número de Parte:</label>
+            <input type="text" id="partNumber" name="partNumber" required class="center-input" placeholder="Ej: 357501117A-TMK">
+
+            <label for="application" class="center-text">Aplicación:</label>
+            <input type="text" id="application" name="application" required class="center-input" placeholder="Ej: CHEV MAZA TRAS.CRUZE 11- C/ABS 5 BIRLOS">
+
+            <label for="quantity" class="center-text">Cantidad:</label>
+            <input type="number" id="quantity" name="quantity" min="0" max="10" step="1" required class="center-input" placeholder="Ej: 5">
+
+            <label for="privatePrice" class="center-text">Precio:</label>
+            <input type="number" id="privatePrice" name="privatePrice" step="0.1" min="0" required class="center-input" placeholder="Ej: 100.50">
+
+            <label for="publicPrice" class="center-text">Público:</label>
+            <input type="number" id="publicPrice" name="publicPrice" step="0.1" min="0" required class="center-input" placeholder="Ej: 130.50">
+
+            <button type="submit">Agregar</button>
+        </form>
+    </div>
+</div>
+
+<div id="updateProductForm" class="modal">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="close" onclick="closeModal('updateProductForm')">&times;</span>
+        <h2 class="center-text">Editar Producto</h2>
+        <form th:action="@{/menu/update}" method="post">
+            <input type="hidden" id="editId" name="id">
+
+            <label for="editPartNumber" class="center-text">Número de parte:</label>
+            <input type="text" id="editPartNumber" name="partNumber" readonly class="center-input">
+
+            <label for="editApplication" class="center-text">Aplicación:</label>
+            <input type="text" id="editApplication" name="application" required class="center-input" placeholder="Ej: CHEV MAZA TRAS.CRUZE 11- C/ABS 5 BIRLOS">
+
+            <label for="editQuantity" class="center-text">Cantidad:</label>
+            <input type="number" id="editQuantity" name="quantity" min="1" max="10" class="center-input" placeholder="Ej: 5">
+
+            <label for="editPrivatePrice" class="center-text">Precio:</label>
+            <input type="number" id="editPrivatePrice" name="privatePrice" step="0.1" min="0" required class="center-input" placeholder="Ej: 100.50">
+
+            <label for="editPublicPrice" class="center-text">Público:</label>
+            <input type="number" id="editPublicPrice" name="publicPrice" step="0.1" min="0" required class="center-input" placeholder="Ej: 130.50">
+
+            <button type="submit">Actualizar</button>
+        </form>
+    </div>
+</div>
+
+<div id="uploadProductExcelForm" class="modal">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="close" onclick="closeModal('uploadProductExcelForm')">&times;</span>
+        <h2 class="center-text">Cargar Archivo Excel a la Base de Datos</h2>
+        <form th:action="@{/product/upload}" method="post" enctype="multipart/form-data">
+            <input type="file" id="excelFile" name="excelFile" accept=".xlsx, .xls" required class="center-input">
+            <button type="submit">Subir</button>
+        </form>
+    </div>
+</div>
+
+<!-- Menús -->
+<nav class="top-menu">
+    <ul>
+        <li>
+            <a href="#">
+                <img th:src="@{/images/sale.png}" alt="Faltante" class="icon">
+                Faltante
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<nav class="action-menu">
+    <ul>
+        <li>
+            <a href="#" onclick="showModal('searchProductForm')">
+                <img th:src="@{/images/search.png}" alt="Buscar" class="icon">
+                Buscar
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="showModal('addProductForm')">
+                <img th:src="@{/images/add.png}" alt="Agregar" class="icon">
+                Agregar
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="showModal('uploadProductExcelForm')">
+                <img th:src="@{/images/upload.png}" alt="Subir Excel" class="icon">
+                Subir
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/product/download}">
+                <img th:src="@{/images/download.png}" alt="Descargar Excel" class="icon">
+                Descargar
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<div class="center-text" th:if="${outputMessageContent != null}" th:class="${outputMessageContent != null and outputMessageContent.contains('Error') ? 'error-message' : 'success-message'}">
+    <label th:text="${outputMessageContent} ?: ''"></label>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Cantidad</th>
+        <th>Número</th>
+        <th>Aplicación</th>
+        <th>Precio</th>
+        <th>Público</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product : ${products}">
+        <td th:text="${product.quantity}"></td>
+        <td th:text="${product.partNumber}"></td>
+        <td th:text="${product.application}"></td>
+        <td th:text="${product.privatePrice}"></td>
+        <td th:text="${product.publicPrice}"></td>
+        <td>
+            <a href="#" data-id="${product.partNumber}" onclick="showUpdateProductForm(this.dataset.id)">
+                <img th:src="@{/images/edit.png}" alt="Editar" class="icon-action">
+
+            </a>
+            <a th:href="@{/menu/delete/{id}(id=${product.partNumber})}" onclick="return confirm('¿Estás seguro de eliminar este producto?');">
+                <img th:src="@{/images/delete.png}" alt="Eliminar" class="icon-action">
+
+            </a>
+            <a href="#" data-id="${product.partNumber}" onclick="sellProduct(this.dataset.id)">
+                <img th:src="@{/images/sell.png}" alt="Vender" class="icon-action">
+
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="pagination-container" th:if="${productsPage != null}">
+    <div class="pagination-buttons">
+        <span th:if="${productsPage.hasPrevious()}">
+            <a th:href="@{/menu/product/previous(page=${productsPage.number - 1})}">Anterior</a>
+        </span>
+        <span th:if="${productsPage.hasNext()}">
+            <a th:href="@{/menu/product/next(page=${productsPage.number + 1})}">Siguiente</a>
+        </span>
+    </div>
+    <p>Página <span th:text="${productsPage.number + 1}"></span> de <span th:text="${productsPage.totalPages}"></span></p>
+</div>
+
+</body>
+</html>

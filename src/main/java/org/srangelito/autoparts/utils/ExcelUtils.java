@@ -49,7 +49,7 @@ public final class ExcelUtils {
 
     private static XSSFWorkbook getXssfWorkbookByMultipartFile(MultipartFile multipartFile) throws UnsupportedFileTypeException, IOException {
         if (!multipartFile.getOriginalFilename().endsWith(".xlsx"))
-            throw new UnsupportedFileTypeException("Error: Formato de archivo no válido.");
+            throw new UnsupportedFileTypeException("Error: Formato de archivo no válido");
         return new XSSFWorkbook(multipartFile.getInputStream());
     }
 
@@ -60,7 +60,7 @@ public final class ExcelUtils {
                     return row.getRowNum();
         }
 
-        throw new SheetTitleNotFoundException("Error: No se pudo encontrar el título de la hoja de cálculo número:" + (xssfSheetIndex + 1));
+        throw new SheetTitleNotFoundException("Error: No se pudo encontrar el título de la hoja de cálculo número " + (xssfSheetIndex + 1));
     }
 
     private static Map<String, Integer> mapAttributeColumns(XSSFSheet xssfSheet, int xssfSheetIndex, int sheetTitleRowIndex, Map<String, String> prefixToAttributeMap) throws MissingAttributeColumnsException, DuplicateAttributeColumnException {
@@ -77,7 +77,7 @@ public final class ExcelUtils {
                             break;
                         }
                         else
-                            throw new DuplicateAttributeColumnException("Error: Uno o más atributos están duplicados en la hoja de cálculo número:" + (xssfSheetIndex + 1));
+                            throw new DuplicateAttributeColumnException("Error: Uno o más atributos están duplicados en la hoja de cálculo número " + (xssfSheetIndex + 1));
                     }
                 }
             }
@@ -86,7 +86,7 @@ public final class ExcelUtils {
                 return attributeToIndexMap;
         }
 
-        throw new MissingAttributeColumnsException("Error: Faltan algunos atributos en la hoja de cálculo número:" + (xssfSheetIndex + 1));
+        throw new MissingAttributeColumnsException("Error: Faltan algunos atributos en la hoja de cálculo número " + (xssfSheetIndex + 1));
     }
 
     public static List<ProductEntity> getProductsByMultipartFile(MultipartFile multipartFile) throws Exception{
@@ -127,7 +127,8 @@ public final class ExcelUtils {
         int cellIndex = 0;
 
         for (Object value : values) {
-            targetRow.createCell(cellIndex).setCellValue(value.toString());
+            if (value != null)
+                targetRow.createCell(cellIndex).setCellValue(value.toString());
             cellIndex++;
         }
     }

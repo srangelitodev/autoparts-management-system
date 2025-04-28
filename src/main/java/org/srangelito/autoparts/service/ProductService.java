@@ -25,6 +25,10 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    public boolean doesProductExist(String partNumber) {
+        return productRepository.existsById(partNumber);
+    }
+
     public byte[] getProductsExcelReport() throws IOException {
         List<ProductEntity> products = productRepository.findAll();
         return ExcelUtils.buildExcelReport(products);
@@ -34,15 +38,18 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    public void upsertProducts(List<ProductEntity> products) {
+        productRepository.saveAll(products);
+    }
+
     public void deleteProduct(ProductEntity product) {
         productRepository.delete(product);
     }
 
-    public List<ProductDto> getProducts(String stringToSearch, int pageNumber, ProductSearchOption productSearchOption) throws UnexpectedErrorException {
+    public Page<ProductEntity> getProducts(String stringToSearch, int pageNumber, ProductSearchOption productSearchOption) {
         Page<ProductEntity> productEntities = null;
-        String sortAttribute = productSearchOption == ProductSearchOption.PART_NUMBER ? "part_number" : "application";
+        String sortAttribute = productSearchOption == ProductSearchOption.PART_NUMBER ? "partNumber" : "application";
         PageRequest pageRequest = PageRequest.of(pageNumber, 30, Sort.by(sortAttribute));
-        ArrayList<ProductDto> productDtos = new ArrayList<>();
 
         switch (productSearchOption) {
             case PART_NUMBER:
@@ -53,14 +60,15 @@ public class ProductService {
             break;
         }
 
-        if (productEntities == null)
-            throw new UnexpectedErrorException("Error: Se produjo un problema al intentar recuperar los productos.");
+        return productEntities;
+    }
 
+    public List<ProductDto> productEntityToDto(Page<ProductEntity> productEntities) {
+        ArrayList<ProductDto> productDtos = new ArrayList<>();
         for (ProductEntity productEntity : productEntities) {
             productDtos.add(new ProductDto(productEntity));
         }
 
         return productDtos;
     }
-
 }
