@@ -3,6 +3,7 @@ package org.srangelito.autoparts.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.srangelito.autoparts.dto.ProductDto;
@@ -42,8 +43,8 @@ public class ProductService {
         productRepository.saveAll(products);
     }
 
-    public void deleteProduct(ProductEntity product) {
-        productRepository.delete(product);
+    public void deleteProduct(String partNumber) {
+        productRepository.deleteById(partNumber);
     }
 
     public Page<ProductEntity> getProducts(String stringToSearch, int pageNumber, ProductSearchOption productSearchOption) {

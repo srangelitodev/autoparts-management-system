@@ -1,6 +1,5 @@
 package org.srangelito.autoparts.controller;
 
-import org.apache.commons.math3.stat.descriptive.summary.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -17,26 +16,18 @@ import org.srangelito.autoparts.exceptions.ExcelException;
 import org.srangelito.autoparts.service.ProductService;
 import org.srangelito.autoparts.utils.ExcelUtils;
 import org.srangelito.autoparts.utils.HttpUtils;
-
-import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Controller
 public class ProductController {
     private ProductService productService;
-    private int pageNumber;
     private String stringToSearch;
+    private ProductSearchOption productSearchOption;
 
     @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
-    }
-
-    @GetMapping ("/product")
-    public String showProductPage() {
-        return "product";
     }
 
     @PostMapping ("/product/upload")
@@ -69,6 +60,26 @@ public class ProductController {
         return "product";
     }
 
+    @PostMapping ("/product/delete")
+    public String deleteProduct(@RequestParam (name = "partNumber") String partNumber, Model model) {
+        productService.deleteProduct(partNumber);
+        model.addAttribute("outputMessageContent", "El producto se eliminado exitosamente");
+        return "product";
+    }
+
+    @PostMapping ("/product/update")
+    public String editProduct(@RequestParam (name = "partNumber") String partNumber, @RequestParam (name = "application") String application, @RequestParam (name = "quantity") Short quantity, @RequestParam (name = "privatePrice") Float privatePrice, @RequestParam (name = "publicPrice") Float publicPrice, Model model) {
+        ProductEntity productEntity = new ProductEntity(partNumber, application, quantity, privatePrice, publicPrice);
+        productService.upsertProduct(productEntity);
+        model.addAttribute("outputMessageContent", "El producto se ha editado exitosamente");
+        return "product";
+    }
+
+    @GetMapping ("/product")
+    public String showProductPage() {
+        return "product";
+    }
+
     @GetMapping ("/product/download")
     public Object downloadExcelData(Model model) {
         try {
@@ -85,8 +96,6 @@ public class ProductController {
     @GetMapping ("/product/search")
     public String showProducts(@RequestParam (name = "criterion") String criterion, @RequestParam (name = "stringToSearch") String stringToSearch, Model model) {
         try {
-            this.stringToSearch = stringToSearch;
-            this.pageNumber = 0;
             ProductSearchOption productSearchOption = null;
 
             switch (criterion) {
@@ -98,7 +107,10 @@ public class ProductController {
                 break;
             }
 
-            Page<ProductEntity> productsPage = productService.getProducts(stringToSearch, pageNumber, productSearchOption);
+            this.stringToSearch = stringToSearch;
+            this.productSearchOption = productSearchOption;
+
+            Page<ProductEntity> productsPage = productService.getProducts(stringToSearch, 0, productSearchOption);
             List<ProductDto> productDtos = productService.productEntityToDto(productsPage);
             model.addAttribute("productsPage", productsPage);
             model.addAttribute("products", productDtos);
@@ -110,5 +122,24 @@ public class ProductController {
         return "product";
     }
 
+    @GetMapping ("/product/next")
+    public String showNextProducts(@RequestParam (name = "pageNumber") int pageNumber, Model model) {
+        Page<ProductEntity> productsPage = productService.getProducts(stringToSearch, pageNumber, productSearchOption);
+        List<ProductDto> productDtos = productService.productEntityToDto(productsPage);
+        model.addAttribute("productsPage", productsPage);
+        model.addAttribute("products", productDtos);
+
+        return "product";
+    }
+
+    @GetMapping ("/product/previous")
+    public String showPreviousProducts(@RequestParam (name = "pageNumber") int pageNumber, Model model) {
+        Page<ProductEntity> productsPage = productService.getProducts(stringToSearch, pageNumber, productSearchOption);
+        List<ProductDto> productDtos = productService.productEntityToDto(productsPage);
+        model.addAttribute("productsPage", productsPage);
+        model.addAttribute("products", productDtos);
+
+        return "product";
+    }
 
 }

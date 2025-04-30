@@ -6,13 +6,15 @@ import java.time.LocalDate;
 
 public class SaleDto {
     private String partNumber;
-    private LocalDate saleDate;
-    private Float saleTotal;
+    private LocalDate date;
+    private Short quantity;
+    private Float total;
 
     public SaleDto(SaleEntity saleEntity) {
         this.partNumber = saleEntity.getPartNumber();
-        this.saleDate = saleEntity.getSaleDate();
-        this.saleTotal = saleEntity.getSaleTotal();
+        this.date = saleEntity.getDate();
+        this.quantity = saleEntity.getQuantity();
+        this.total = saleEntity.getTotal();
     }
 
     public String getPartNumber() {
@@ -20,11 +22,15 @@ public class SaleDto {
     }
 
     public LocalDate getSaleDate() {
-        return this.saleDate;
+        return this.date;
+    }
+
+    public Short getQuantity() {
+        return this.quantity;
     }
 
     public Float getSaleTotal() {
-        return this.saleTotal;
+        return this.total;
     }
 
     public void setPartNumber(String partNumber) {
@@ -32,10 +38,14 @@ public class SaleDto {
     }
 
     public void setSaleDate(LocalDate saleDate) {
-        this.saleDate = saleDate;
+        this.date = saleDate;
+    }
+
+    public void setQuantity(Short quantity) {
+        this.quantity = quantity;
     }
 
     public void setSaleTotal(Float saleTotal) {
-        this.saleTotal = saleTotal;
+        this.total = saleTotal;
     }
 }

@@ -23,7 +23,7 @@ public class SaleService {
     }
 
     public void insertSale(SaleEntity saleEntity) throws UnsupportedOperationException {
-        if(saleRepository.existsById(saleEntity.getSaleId()))
+        if(saleRepository.existsById(saleEntity.getId()))
             throw new UnsupportedOperationException("Error: El identificador de la venta ya existe, por lo que no es posible completar la operación.");
         saleRepository.save(saleEntity);
     }
@@ -48,17 +48,17 @@ public class SaleService {
         switch (dateComponent) {
             case YEAR:
                 for (SaleEntity saleEntity : salesEntities)
-                    if (String.valueOf(saleEntity.getSaleDate().getYear()).equals(stringToMatch))
+                    if (String.valueOf(saleEntity.getDate().getYear()).equals(stringToMatch))
                         salesDtos.add(new SaleDto(saleEntity));
             break;
             case MONTH:
                 for (SaleEntity saleEntity : salesEntities)
-                    if (String.valueOf(saleEntity.getSaleDate().getMonth()).equals(stringToMatch))
+                    if (String.valueOf(saleEntity.getDate().getMonth()).equals(stringToMatch))
                         salesDtos.add(new SaleDto(saleEntity));
             break;
             case DAY:
                 for (SaleEntity saleEntity : salesEntities)
-                    if (String.valueOf(saleEntity.getSaleDate().getDayOfMonth()).equals(stringToMatch))
+                    if (String.valueOf(saleEntity.getDate().getDayOfMonth()).equals(stringToMatch))
                         salesDtos.add(new SaleDto(saleEntity));
             break;
        }

@@ -147,11 +147,11 @@ public final class ExcelUtils {
             }
         }
         else if (items.getFirst() instanceof SaleEntity) {
-            ExcelUtils.setRowValues(excelSheet.createRow(0), "Número de Parte", "Cantidad", "Total");
+            ExcelUtils.setRowValues(excelSheet.createRow(0), "Número de Parte", "Fecha", "Cantidad", "Total");
             int rowIndex = 1;
             for (T item : items) {
                 SaleEntity saleEntity = (SaleEntity) item;
-                ExcelUtils.setRowValues(excelSheet.createRow(rowIndex), saleEntity.getPartNumber(), saleEntity.getSaleDate(), saleEntity.getSaleTotal());
+                ExcelUtils.setRowValues(excelSheet.createRow(rowIndex), saleEntity.getPartNumber(), saleEntity.getDate(), saleEntity.getQuantity(), saleEntity.getTotal());
                 rowIndex++;
             }
         }

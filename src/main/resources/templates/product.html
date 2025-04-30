@@ -36,6 +36,34 @@
             if (event.target === modal) closeModal(id);
         });
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".delete-btn").forEach(function (btn) {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const partNumber = this.getAttribute("data-id");
+                if (confirm("¿Estás seguro de eliminar este producto?")) {
+                    const form = document.getElementById(`delete-form-${partNumber}`);
+                    if (form) form.submit();
+                }
+            });
+        });
+
+        document.querySelectorAll(".edit-btn").forEach(function (btn) {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                document.getElementById("editId").value = btn.dataset.id;
+                document.getElementById("editPartNumber").value = btn.dataset.partnumber;
+                document.getElementById("editApplication").value = btn.dataset.application;
+                document.getElementById("editQuantity").value = btn.dataset.quantity;
+                document.getElementById("editPrivatePrice").value = btn.dataset.privateprice;
+                document.getElementById("editPublicPrice").value = btn.dataset.publicprice;
+
+                showModal("updateProductForm");
+            });
+        });
+    });
 </script>
 
 <div id="searchProductForm" class="modal">
@@ -83,7 +111,7 @@
     <div class="modal-content" onclick="event.stopPropagation()">
         <span class="close" onclick="closeModal('updateProductForm')">&times;</span>
         <h2 class="center-text">Editar Producto</h2>
-        <form th:action="@{/menu/update}" method="post">
+        <form th:action="@{/product/update}" method="post">
             <input type="hidden" id="editId" name="id">
 
             <label for="editPartNumber" class="center-text">Número de parte:</label>
@@ -117,7 +145,6 @@
     </div>
 </div>
 
-<!-- Menús -->
 <nav class="top-menu">
     <ul>
         <li>
@@ -181,17 +208,25 @@
         <td th:text="${product.privatePrice}"></td>
         <td th:text="${product.publicPrice}"></td>
         <td>
-            <a href="#" data-id="${product.partNumber}" onclick="showUpdateProductForm(this.dataset.id)">
+            <a href="#"
+               class="edit-btn"
+               th:attr="data-partnumber=${product.partNumber},
+            data-application=${product.application},
+            data-quantity=${product.quantity},
+            data-privateprice=${product.privatePrice},
+            data-publicprice=${product.publicPrice}">
                 <img th:src="@{/images/edit.png}" alt="Editar" class="icon-action">
-
             </a>
-            <a th:href="@{/menu/delete/{id}(id=${product.partNumber})}" onclick="return confirm('¿Estás seguro de eliminar este producto?');">
+
+            <form th:action="@{/product/delete}" method="post" th:id="'delete-form-' + ${product.partNumber}" style="display: none;">
+                <input type="hidden" name="partNumber" th:value="${product.partNumber}" />
+            </form>
+            <a href="#" class="delete-btn" th:attr="data-id=${product.partNumber}">
                 <img th:src="@{/images/delete.png}" alt="Eliminar" class="icon-action">
-
             </a>
+
             <a href="#" data-id="${product.partNumber}" onclick="sellProduct(this.dataset.id)">
                 <img th:src="@{/images/sell.png}" alt="Vender" class="icon-action">
-
             </a>
         </td>
     </tr>
@@ -201,10 +236,10 @@
 <div class="pagination-container" th:if="${productsPage != null}">
     <div class="pagination-buttons">
         <span th:if="${productsPage.hasPrevious()}">
-            <a th:href="@{/menu/product/previous(page=${productsPage.number - 1})}">Anterior</a>
+            <a th:href="@{/product/previous(pageNumber=${productsPage.number - 1})}">Anterior</a>
         </span>
         <span th:if="${productsPage.hasNext()}">
-            <a th:href="@{/menu/product/next(page=${productsPage.number + 1})}">Siguiente</a>
+            <a th:href="@{/product/next(pageNumber=${productsPage.number + 1})}">Siguiente</a>
         </span>
     </div>
     <p>Página <span th:text="${productsPage.number + 1}"></span> de <span th:text="${productsPage.totalPages}"></span></p>

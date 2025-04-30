@@ -9,54 +9,64 @@ import java.time.LocalDate;
 public class SaleEntity {
     @Id
     @GeneratedValue (strategy = GenerationType.SEQUENCE)
-    @Column (name = "sale_id")
-    private Integer saleId;
+    @Column (name = "id")
+    private Integer id;
     @Column (name = "part_number")
     private String partNumber;
-    @Column (name = "sale_date")
-    private LocalDate saleDate;
-    @Column (name = "sale_total")
-    private Float saleTotal;
+    @Column (name = "date")
+    private LocalDate date;
+    @Column (name = "quantity")
+    private Short quantity;
+    @Column (name = "total")
+    private Float total;
 
     public SaleEntity() {
     }
 
-    public SaleEntity(Integer saleId, String partNumber, LocalDate saleDate, Float saleTotal) {
-        this.saleId = saleId;
+    public SaleEntity(String partNumber, LocalDate date, Short quantity, Float total) {
         this.partNumber = partNumber;
-        this.saleDate = saleDate;
-        this.saleTotal = saleTotal;
+        this.date = date;
+        this.quantity = quantity;
+        this.total = total;
     }
 
-    public Integer getSaleId() {
-        return this.saleId;
+    public Integer getId() {
+        return this.id;
     }
 
     public String getPartNumber() {
         return this.partNumber;
     }
 
-    public LocalDate getSaleDate() {
-        return this.saleDate;
+    public LocalDate getDate() {
+        return this.date;
     }
 
-    public Float getSaleTotal() {
-        return this.saleTotal;
+    public Short getQuantity() {
+        return this.quantity;
     }
 
-    public void setSaleId(Integer saleId) {
-        this.saleId = saleId;
+    public Float getTotal() {
+        return this.total;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setPartNumber(String partNumber) {
         this.partNumber = partNumber;
     }
 
-    public void setSaleDate(LocalDate saleDate) {
-        this.saleDate = saleDate;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
-    public void setSaleTotal(Float saleTotal) {
-        this.saleTotal = saleTotal;
+    public void setQuantity(Short quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setTotal(Float total) {
+        this.total = total;
     }
 }
