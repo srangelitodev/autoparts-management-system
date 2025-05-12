@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Faltantes</title>
+    <link rel="stylesheet" th:href="@{/css/general.css}">
+</head>
+<body>
+
+<script>
+    function showModal(id) {
+        const modal = document.getElementById(id);
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(id) {
+        const modal = document.getElementById(id);
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    window.onclick = function(event) {
+        ['searchSaleForm'].forEach(function(id) {
+            const modal = document.getElementById(id);
+            if (event.target === modal) closeModal(id);
+        });
+    }
+</script>
+
+<div id="searchSaleForm" class="modal">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <style>
+            .checkbox-group-inline {
+                display: flex;
+                justify-content: center;
+                gap: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .checkbox-group-inline label {
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+                font-weight: bold;
+            }
+        </style>
+
+        <script>
+            function validateCheckboxes(event) {
+                const checked = document.querySelectorAll('input[name="criterion"]:checked');
+                if (checked.length === 0) {
+                    alert("Debes seleccionar al menos un criterio (Año, Mes o Día).");
+                    event.preventDefault();
+                    return false;
+                }
+                return true;
+            }
+        </script>
+
+        <span class="close" onclick="closeModal('searchSaleForm')">&times;</span>
+        <h2 class="center-text">Buscar Faltante</h2>
+
+        <form th:action="@{/sale/search}" method="get" onsubmit="return validateCheckboxes(event)">
+            <label class="center-text">Buscar por...</label>
+
+            <div class="checkbox-group-inline center-input">
+                <label><input type="checkbox" name="criterion" value="year"> Año</label>
+                <label><input type="checkbox" name="criterion" value="month"> Mes</label>
+                <label><input type="checkbox" name="criterion" value="day"> Día</label>
+            </div>
+
+            <label class="center-text">Fecha:</label>
+            <input type="date" id="dateToSearch" name="dateToSearch" required class="center-input">
+
+            <button type="submit">Buscar</button>
+        </form>
+    </div>
+</div>
+
+<nav class="top-menu">
+    <ul>
+        <li>
+            <a th:href="@{/product}">
+                <img th:src="@{/images/product.png}" alt="Producto" class="icon">
+                Producto
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<nav class="action-menu">
+    <ul>
+        <li>
+            <a href="#" onclick="showModal('searchSaleForm')">
+                <img th:src="@{/images/search.png}" alt="Buscar" class="icon">
+                Buscar
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/sale/download}">
+                <img th:src="@{/images/download.png}" alt="Descargar Excel" class="icon">
+                Descargar
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<div class="center-text" th:if="${outputMessageContent != null}" th:class="${outputMessageContent != null and outputMessageContent.contains('Error') ? 'error-message' : 'success-message'}">
+    <label th:text="${outputMessageContent} ?: ''"></label>
+</div>
+
+<table th:if="${sales != null and !sales.isEmpty()}">
+    <thead>
+    <tr>
+        <th>Número de Parte</th>
+        <th>Fecha</th>
+        <th>Cantidad</th>
+        <th>Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="sale : ${sales}">
+        <td th:text="${sale.partNumber}"></td>
+        <td th:text="${sale.date}"></td>
+        <td th:text="${sale.quantity}"></td>
+        <td th:text="${sale.total}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="pagination-container" th:if="${sales != null and !sales.isEmpty()}">
+    <div class="pagination-buttons">
+        <span th:if="${sales.hasPrevious()}">
+            <a th:href="@{/sale/previous(pageNumber=${sales.number - 1})}">Anterior</a>
+        </span>
+        <span th:if="${sales.hasNext()}">
+            <a th:href="@{/sale/next(pageNumber=${sales.number + 1})}">Siguiente</a>
+        </span>
+    </div>
+    <p>Página <span th:text="${sales.number + 1}"></span> de <span th:text="${sales.totalPages}"></span></p>
+</div>
+
+<p th:if="${(searchRequest ?: false) and sales.isEmpty()}" style="text-align: center">Sin resultados</p>
+
+</body>
+</html>

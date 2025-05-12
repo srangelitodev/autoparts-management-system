@@ -21,7 +21,7 @@ import java.util.List;
 
 @Controller
 public class ProductController {
-    private ProductService productService;
+    private final ProductService productService;
     private String stringToSearch;
     private ProductSearchOption productSearchOption;
 
@@ -114,6 +114,7 @@ public class ProductController {
             List<ProductDto> productDtos = productService.productEntityToDto(productsPage);
             model.addAttribute("productsPage", productsPage);
             model.addAttribute("products", productDtos);
+            model.addAttribute("searchRequest", true);
         }
         catch (Exception exception) {
             model.addAttribute("outputMessageContent", "Error: Ocurrió un error inesperado al intentar obtener los productos");

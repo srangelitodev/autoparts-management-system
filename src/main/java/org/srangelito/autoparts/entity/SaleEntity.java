@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Table (name = "sale")
 public class SaleEntity {
     @Id
-    @GeneratedValue (strategy = GenerationType.SEQUENCE)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column (name = "id")
     private Integer id;
     @Column (name = "part_number")

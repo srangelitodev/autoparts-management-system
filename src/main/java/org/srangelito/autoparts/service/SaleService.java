@@ -1,16 +1,17 @@
 package org.srangelito.autoparts.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.srangelito.autoparts.dto.SaleDto;
+import org.srangelito.autoparts.entity.ProductEntity;
 import org.srangelito.autoparts.entity.SaleEntity;
 import org.srangelito.autoparts.enums.DateComponent;
-import org.srangelito.autoparts.exceptions.UnsupportedOperationException;
 import org.srangelito.autoparts.repository.SaleRepository;
+import org.srangelito.autoparts.utils.ExcelUtils;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,51 +19,60 @@ import java.util.List;
 public class SaleService {
     private SaleRepository saleRepository;
 
+    @Autowired
     public SaleService(SaleRepository saleRepository) {
         this.saleRepository = saleRepository;
     }
 
-    public void insertSale(SaleEntity saleEntity) throws UnsupportedOperationException {
-        if(saleRepository.existsById(saleEntity.getId()))
-            throw new UnsupportedOperationException("Error: El identificador de la venta ya existe, por lo que no es posible completar la operación.");
+    public void insertSale(SaleEntity saleEntity)  {
         saleRepository.save(saleEntity);
     }
 
-    public List<SaleDto> getAllSales(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 30, Sort.by("sale_date").descending());
-        Page<SaleEntity> salesEntities = saleRepository.findAll(pageable);
-        ArrayList<SaleDto> salesDtos = new ArrayList<>();
-
-        for (SaleEntity saleEntity : salesEntities) {
-            salesDtos.add(new SaleDto(saleEntity));
-        }
-
-        return salesDtos;
+    public List<SaleEntity> getAllSales() {
+        return saleRepository.findAll(Sort.by("date"));
     }
 
-    public List<SaleDto> getSalesByDateComponentMatch(String stringToMatch, DateComponent dateComponent, int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 30, Sort.by("sale_date").descending());
-        Page<SaleEntity> salesEntities = saleRepository.findAll(pageable);
-        ArrayList<SaleDto> salesDtos = new ArrayList<>();
+    public List<SaleEntity> getSalesByDateComponentMatch(List<SaleEntity> SalesEntities, LocalDate dateToSearch, DateComponent dateComponent) {
+        ArrayList<SaleEntity> resultSalesEntities = new ArrayList<>();
 
         switch (dateComponent) {
             case YEAR:
-                for (SaleEntity saleEntity : salesEntities)
-                    if (String.valueOf(saleEntity.getDate().getYear()).equals(stringToMatch))
-                        salesDtos.add(new SaleDto(saleEntity));
+                for (SaleEntity saleEntity : SalesEntities)
+                    if (saleEntity.getDate().getYear() == dateToSearch.getYear())
+                        resultSalesEntities.add(saleEntity);
             break;
             case MONTH:
-                for (SaleEntity saleEntity : salesEntities)
-                    if (String.valueOf(saleEntity.getDate().getMonth()).equals(stringToMatch))
-                        salesDtos.add(new SaleDto(saleEntity));
+                for (SaleEntity saleEntity : SalesEntities)
+                    if (saleEntity.getDate().getMonth() == dateToSearch.getMonth())
+                        resultSalesEntities.add(saleEntity);
             break;
             case DAY:
-                for (SaleEntity saleEntity : salesEntities)
-                    if (String.valueOf(saleEntity.getDate().getDayOfMonth()).equals(stringToMatch))
-                        salesDtos.add(new SaleDto(saleEntity));
+                for (SaleEntity saleEntity : SalesEntities)
+                    if (saleEntity.getDate().getDayOfMonth() == dateToSearch.getDayOfMonth())
+                        resultSalesEntities.add(saleEntity);;
             break;
        }
 
-       return salesDtos;
+       return resultSalesEntities;
+    }
+
+    public List<SaleEntity> getSalesByAllDateComponentsMatch(List<SaleEntity> salesEntities, LocalDate dateToSearch, List<DateComponent> dateComponents) {
+        for (DateComponent dateComponent : dateComponents)
+            salesEntities = this.getSalesByDateComponentMatch(salesEntities, dateToSearch, dateComponent);
+
+        return salesEntities;
+    }
+
+    public List<SaleDto> saleEntityToSaleDto(List<SaleEntity> SalesEntities) {
+        ArrayList<SaleDto> saleDtos = new ArrayList<>();
+        for (SaleEntity saleEntity : SalesEntities)
+            saleDtos.add(new SaleDto(saleEntity));
+
+        return saleDtos;
+    }
+
+    public byte[] getSalesExcelReport() throws IOException {
+        List<SaleEntity> sales = saleRepository.findAll();
+        return ExcelUtils.buildExcelReport(sales);
     }
 }

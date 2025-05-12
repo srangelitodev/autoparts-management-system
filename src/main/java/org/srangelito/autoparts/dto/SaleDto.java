@@ -21,7 +21,7 @@ public class SaleDto {
         return this.partNumber;
     }
 
-    public LocalDate getSaleDate() {
+    public LocalDate getDate() {
         return this.date;
     }
 
@@ -29,7 +29,7 @@ public class SaleDto {
         return this.quantity;
     }
 
-    public Float getSaleTotal() {
+    public Float getTotal() {
         return this.total;
     }
 
@@ -37,7 +37,7 @@ public class SaleDto {
         this.partNumber = partNumber;
     }
 
-    public void setSaleDate(LocalDate saleDate) {
+    public void setDate(LocalDate saleDate) {
         this.date = saleDate;
     }
 
@@ -45,7 +45,7 @@ public class SaleDto {
         this.quantity = quantity;
     }
 
-    public void setSaleTotal(Float saleTotal) {
+    public void setTotal(Float saleTotal) {
         this.total = saleTotal;
     }
 }

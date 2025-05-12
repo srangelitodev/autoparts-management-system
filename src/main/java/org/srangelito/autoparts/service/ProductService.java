@@ -3,13 +3,11 @@ package org.srangelito.autoparts.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.srangelito.autoparts.dto.ProductDto;
 import org.srangelito.autoparts.entity.ProductEntity;
 import org.srangelito.autoparts.enums.ProductSearchOption;
-import org.srangelito.autoparts.exceptions.UnexpectedErrorException;
 import org.srangelito.autoparts.repository.ProductRepository;
 import org.srangelito.autoparts.utils.ExcelUtils;
 
@@ -45,6 +43,10 @@ public class ProductService {
 
     public void deleteProduct(String partNumber) {
         productRepository.deleteById(partNumber);
+    }
+
+    public ProductEntity getProductByPartNumber(String partNumber) {
+        return productRepository.findById(partNumber).orElse(null);
     }
 
     public Page<ProductEntity> getProducts(String stringToSearch, int pageNumber, ProductSearchOption productSearchOption) {
